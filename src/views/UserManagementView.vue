@@ -98,6 +98,15 @@ const departmentOptions = ref<{ label: string; value: string }[]>([])
 // 部门映射（用于显示）
 const departmentMap = ref<Record<string, string>>({})
 
+// BasicSelect 数据回填，避免重复请求
+const handleDeptLoaded = (payload: { options: { label: string; value: string }[]; raw: any }) => {
+  departmentOptions.value = payload.options || []
+  departmentMap.value = (payload.options || []).reduce((map: Record<string, string>, item) => {
+    map[item.value] = item.label
+    return map
+  }, {})
+}
+
 const columns: TableColumn[] = [
   { field: 'id', title: 'ID', width: 80, align: 'center' },
   {
@@ -132,7 +141,13 @@ const columns: TableColumn[] = [
     align: 'center',
     searchable: true,
     searchType: 'select',
-    searchOptions: departmentOptions,
+    // 让 BasicTable 内部的 BasicSelect 自行拉接口，加载后通过 onDataLoaded 回填选项与映射
+    searchSelectProps: {
+      listUrl: '/system/department/departList',
+      valueKey: 'id',
+      labelKey: 'name',
+      onDataLoaded: handleDeptLoaded
+    },
     formatter: ({ cellValue }) => {
       return departmentMap.value[cellValue] || cellValue || '--'
     }
@@ -144,15 +159,6 @@ const columns: TableColumn[] = [
     formatter: ({ cellValue }) => cellValue || '--'
   }
 ]
-
-// BasicSelect 自拉数据后回填表格搜索与映射
-const handleDeptLoaded = (payload: { options: { label: string; value: string }[]; raw: any }) => {
-  departmentOptions.value = payload.options || []
-  departmentMap.value = (payload.options || []).reduce((map: Record<string, string>, item) => {
-    map[item.value] = item.label
-    return map
-  }, {})
-}
 
 const tableRef = ref<TableInstance>()
 const modalVisible = ref(false)
