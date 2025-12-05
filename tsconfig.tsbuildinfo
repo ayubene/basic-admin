@@ -1,0 +1,1 @@
+{"root":["./src/main.ts","./src/mock/index.ts","./src/router/index.ts","./src/app.vue","./src/views/dashboardview.vue","./src/views/productmanagementview.vue","./src/views/settingsview.vue","./src/views/usermanagementview.vue"],"errors":true,"version":"5.9.3"}
