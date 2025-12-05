@@ -18,8 +18,7 @@
     <BasicTable
       ref="tableRef"
       :columns="columns"
-      query-url="/api/users"
-      delete-url="/api/users"
+      query-url="/system/user/list"
       :height="520"
       :show-export="false"
       :show-create="false"
@@ -70,9 +69,10 @@
           <el-form-item label="部门">
             <BasicSelect
               v-model="form.department"
-              list-url="/api/departments"
+              list-url="/system/department/departList"
               value-key="id"
               label-key="name"
+              placeholder="请选择部门"
             />
           </el-form-item>
         </el-col>
@@ -87,10 +87,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { request } from 'srit-basic-components'
 import type { TableColumn, TableInstance } from 'srit-basic-components'
+import { getDepartmentList } from '../api/department'
+import type { DepartmentInfo } from '../api/department'
+
+// 部门选项（动态加载）
+const departmentOptions = ref<{ label: string; value: string }[]>([])
+
+// 部门映射（用于显示）
+const departmentMap = ref<Record<string, string>>({})
 
 const columns: TableColumn[] = [
   { field: 'id', title: 'ID', width: 80, align: 'center' },
@@ -126,18 +133,9 @@ const columns: TableColumn[] = [
     align: 'center',
     searchable: true,
     searchType: 'select',
-    searchOptions: [
-      { label: '技术部', value: 'tech' },
-      { label: '产品部', value: 'product' },
-      { label: '运营部', value: 'operation' }
-    ],
+    searchOptions: departmentOptions,
     formatter: ({ cellValue }) => {
-      const map: Record<string, string> = {
-        tech: '技术部',
-        product: '产品部',
-        operation: '运营部'
-      }
-      return map[cellValue] || cellValue || '--'
+      return departmentMap.value[cellValue] || cellValue || '--'
     }
   },
   {
@@ -148,13 +146,39 @@ const columns: TableColumn[] = [
   }
 ]
 
+// 加载部门列表
+const loadDepartments = async () => {
+  try {
+    const departments = await getDepartmentList()
+    
+    // 构建选项列表
+    departmentOptions.value = departments.map((dept: DepartmentInfo) => ({
+      label: dept.name,
+      value: dept.id
+    }))
+    
+    // 构建映射表
+    departmentMap.value = departments.reduce((map: Record<string, string>, dept: DepartmentInfo) => {
+      map[dept.id] = dept.name
+      return map
+    }, {})
+  } catch (error) {
+    console.error('加载部门列表失败:', error)
+  }
+}
+
+// 组件挂载时加载部门列表
+onMounted(() => {
+  loadDepartments()
+})
+
 const tableRef = ref<TableInstance>()
 const modalVisible = ref(false)
 const modalTitle = ref('新增用户')
 const form = ref({
   name: '',
   email: '',
-  department: 'tech'
+  department: ''
 })
 const selectedRows = ref<any[]>([])
 
@@ -165,7 +189,7 @@ const handleSelectionChange = (rows: any[]) => {
 
 const handleCreate = () => {
   modalTitle.value = '新增用户'
-  form.value = { name: '', email: '', department: 'tech' }
+  form.value = { name: '', email: '', department: '' }
   modalVisible.value = true
 }
 

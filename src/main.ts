@@ -8,7 +8,7 @@ import BasicComponents from 'srit-basic-components'
 import App from './App.vue'
 import router from './router'
 import './styles/index.css'
-import './mock'
+// import './mock' // 使用真实接口时注释掉 mock
 
 const app = createApp(App)
 

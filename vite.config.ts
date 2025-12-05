@@ -10,6 +10,13 @@ export default defineConfig({
     }
   },
   server: {
-    port: 5174
+    port: 5174,
+    proxy: {
+      '/system': {
+        target: 'http://10.1.23.80:8082/shiye-retail',
+        changeOrigin: true,
+        rewrite: (path) => path
+      }
+    }
   }
 })
