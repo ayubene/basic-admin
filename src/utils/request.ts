@@ -97,35 +97,36 @@ try {
         
         console.log('📥 响应拦截器触发:', config.url)
         
-        // 如果后端返回的数据结构是 { code, msg, rows, total }
-        // 需要转换为 BasicTable 期望的格式 { data, total }
+        // 统一把接口返回格式转换为组件可用的数据
         if (data && typeof data === 'object') {
-          // 处理分页列表数据（用户列表等）
-          if (data.rows !== undefined && data.total !== undefined) {
-            console.log('✅ 转换分页数据格式')
+          // 1) 部门下拉：如果接口返回 { rows, total }，BasicSelect 只需要数组
+          if (config.url?.includes('/department') && Array.isArray((data as any).rows)) {
+            console.log('✅ 部门接口 rows -> 数组返回')
+            return { ...response, data: (data as any).rows }
+          }
+
+          // 2) 列表分页：BasicTable 期望 { data, total }
+          if ((data as any).rows !== undefined && (data as any).total !== undefined) {
+            console.log('✅ 转换分页数据格式供 BasicTable 使用')
             return {
               ...response,
               data: {
-                data: data.rows,
-                total: data.total
+                data: (data as any).rows,
+                total: (data as any).total
               }
             }
           }
           
-          // 处理普通列表数据（部门列表等）- BasicSelect 需要的格式
-          // 如果是数组，直接返回，BasicSelect 会使用
+          // 3) 普通数组：直接返回，BasicSelect 会使用
           if (Array.isArray(data)) {
             console.log('✅ 数组数据，直接返回')
             return response
           }
           
-          // 如果返回格式是 { code, msg, data: [...] }，提取 data
-          if (data.code !== undefined && Array.isArray(data.data)) {
+          // 4) 常见 { code, msg, data: [...] } 结构，提取 data
+          if ((data as any).code !== undefined && Array.isArray((data as any).data)) {
             console.log('✅ 提取 data 数组')
-            return {
-              ...response,
-              data: data.data
-            }
+            return { ...response, data: (data as any).data }
           }
         }
         

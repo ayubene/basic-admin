@@ -16,7 +16,7 @@
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
     "vxe-table": "^4.7.47",
-    "srit-basic-components": "1.0.2"
+    "srit-basic-components": "file:../basic-components"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",

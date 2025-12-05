@@ -72,6 +72,7 @@
               list-url="/system/department/departList"
               value-key="id"
               label-key="name"
+              @data-loaded="handleDeptLoaded"
               placeholder="请选择部门"
             />
           </el-form-item>
@@ -87,11 +88,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { TableColumn, TableInstance } from 'srit-basic-components'
-import { getDepartmentList } from '../api/department'
-import type { DepartmentInfo } from '../api/department'
 
 // 部门选项（动态加载）
 const departmentOptions = ref<{ label: string; value: string }[]>([])
@@ -146,31 +145,14 @@ const columns: TableColumn[] = [
   }
 ]
 
-// 加载部门列表
-const loadDepartments = async () => {
-  try {
-    const departments = await getDepartmentList()
-    
-    // 构建选项列表
-    departmentOptions.value = departments.map((dept: DepartmentInfo) => ({
-      label: dept.name,
-      value: dept.id
-    }))
-    
-    // 构建映射表
-    departmentMap.value = departments.reduce((map: Record<string, string>, dept: DepartmentInfo) => {
-      map[dept.id] = dept.name
-      return map
-    }, {})
-  } catch (error) {
-    console.error('加载部门列表失败:', error)
-  }
+// BasicSelect 自拉数据后回填表格搜索与映射
+const handleDeptLoaded = (payload: { options: { label: string; value: string }[]; raw: any }) => {
+  departmentOptions.value = payload.options || []
+  departmentMap.value = (payload.options || []).reduce((map: Record<string, string>, item) => {
+    map[item.value] = item.label
+    return map
+  }, {})
 }
-
-// 组件挂载时加载部门列表
-onMounted(() => {
-  loadDepartments()
-})
 
 const tableRef = ref<TableInstance>()
 const modalVisible = ref(false)
