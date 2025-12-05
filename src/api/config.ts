@@ -15,14 +15,19 @@ const request = axios.create({
   }
 })
 
-// 请求拦截器
+// 请求拦截器 - 添加 token
 request.interceptors.request.use(
   (config) => {
-    // 可以在这里添加 token
-    // const token = localStorage.getItem('token')
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`
-    // }
+    const token = localStorage.getItem('token')
+    
+    // 如果有 token，添加到请求头
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+      // 或者根据后端要求使用其他格式：
+      // config.headers.token = token
+      // config.headers['X-Token'] = token
+    }
+    
     return config
   },
   (error) => {
@@ -75,6 +80,10 @@ request.interceptors.response.use(
       switch (status) {
         case 401:
           ElMessage.error('未授权，请重新登录')
+          // 清除 token
+          localStorage.removeItem('token')
+          // 如果有路由，可以跳转到登录页
+          // router.push('/login')
           break
         case 403:
           ElMessage.error('拒绝访问')
@@ -97,3 +106,18 @@ request.interceptors.response.use(
 )
 
 export default request
+
+/**
+ * 导出 token 管理函数
+ */
+export const setToken = (token: string) => {
+  localStorage.setItem('token', token)
+}
+
+export const getToken = () => {
+  return localStorage.getItem('token')
+}
+
+export const clearToken = () => {
+  localStorage.removeItem('token')
+}
