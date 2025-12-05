@@ -18,7 +18,7 @@
     <BasicTable
       ref="tableRef"
       :columns="columns"
-      query-url="/system/user/list"
+      query-url="http://10.1.23.80:8082/shiye-retail/system/user/list"
       :height="520"
       :show-export="false"
       :show-create="false"
@@ -69,7 +69,7 @@
           <el-form-item label="部门">
             <BasicSelect
               v-model="form.department"
-              list-url="/system/department/departList"
+              list-url="http://10.1.23.80:8082/shiye-retail/system/department/departList"
               value-key="id"
               label-key="name"
               @data-loaded="handleDeptLoaded"
@@ -143,7 +143,7 @@ const columns: TableColumn[] = [
     searchType: 'select',
     // 让 BasicTable 内部的 BasicSelect 自行拉接口，加载后通过 onDataLoaded 回填选项与映射
     searchSelectProps: {
-      listUrl: '/system/department/departList',
+      listUrl: 'http://10.1.23.80:8082/shiye-retail/system/department/departList',
       valueKey: 'id',
       labelKey: 'name',
       onDataLoaded: handleDeptLoaded
