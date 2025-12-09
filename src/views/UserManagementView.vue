@@ -25,6 +25,7 @@
       :enable-column-customize="true"
       column-customize-key="user-management"
       :search-form-cols="3"
+      :show-delete="true"
       @selection-change="handleSelectionChange"
     >
       <!-- 工具栏插槽：添加批量操作按钮 -->
@@ -70,7 +71,7 @@
             <BasicSelect
               v-model="form.department"
               list-url="http://10.1.23.80:8082/shiye-retail/system/department/departList"
-              value-key="id"
+              value-key="mdmCode"
               label-key="name"
               @data-loaded="handleDeptLoaded"
               placeholder="请选择部门"
@@ -108,9 +109,9 @@ const handleDeptLoaded = (payload: { options: { label: string; value: string }[]
 }
 
 const columns: TableColumn[] = [
-  { field: 'id', title: 'ID', width: 80, align: 'center' },
+  { field: 'userId', title: 'ID', width: 80, align: 'center' },
   {
-    field: 'name',
+    field: 'userName',
     title: '姓名',
     align: 'center',
     searchable: true,
@@ -136,7 +137,7 @@ const columns: TableColumn[] = [
     slots: { default: 'status' }
   },
   {
-    field: 'department',
+    field: 'departmentName',
     title: '部门',
     align: 'center',
     searchable: true,

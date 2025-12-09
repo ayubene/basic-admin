@@ -16,7 +16,7 @@
     <BasicTable
       ref="tableRef"
       :columns="columns"
-      query-url="/api/products"
+      query-url="http://10.1.23.80:8082/shiye-retail/bs/goodsSku/list"
       delete-url="/api/products"
       export-url="/api/products/export"
       :height="600"
@@ -55,14 +55,14 @@
 
       <!-- 状态列自定义渲染 -->
       <template #status="{ row }">
-        <el-tag :type="getStatusType(row.status)" size="small">
-          {{ getStatusText(row.status) }}
+        <el-tag :type="getStatusType(row.skuStatus)" size="small">
+          {{ row.skuStatusName || '--' }}
         </el-tag>
       </template>
 
       <!-- 分类列自定义渲染 -->
       <template #category="{ row }">
-        <el-tag type="info" size="small">{{ row.category || '--' }}</el-tag>
+        <el-tag type="info" size="small">{{ row.categoryName || '--' }}</el-tag>
       </template>
 
       <!-- 价格列自定义渲染 -->
@@ -222,7 +222,7 @@ const columns: TableColumn[] = [
     sortable: true
   },
   {
-    field: 'image',
+    field: 'imageSkuUrl',
     title: '商品图片',
     width: 100,
     align: 'center',
@@ -230,7 +230,7 @@ const columns: TableColumn[] = [
     sortable: false
   },
   {
-    field: 'name',
+    field: 'skuName',
     title: '商品名称',
     minWidth: 150,
     align: 'center',
@@ -241,7 +241,7 @@ const columns: TableColumn[] = [
     formatter: ({ cellValue }) => cellValue || '--'
   },
   {
-    field: 'code',
+    field: 'skuCode',
     title: '商品编码',
     width: 120,
     align: 'center',
@@ -251,7 +251,7 @@ const columns: TableColumn[] = [
     formatter: ({ cellValue }) => cellValue || '--'
   },
   {
-    field: 'category',
+    field: 'categoryName',
     title: '分类',
     width: 120,
     align: 'center',
@@ -278,7 +278,7 @@ const columns: TableColumn[] = [
     formatter: ({ cellValue }) => cellValue || '--'
   },
   {
-    field: 'price',
+    field: 'purchasePrice',
     title: '价格',
     width: 120,
     align: 'center',
@@ -288,25 +288,7 @@ const columns: TableColumn[] = [
     slots: { default: 'price' }
   },
   {
-    field: 'stock',
-    title: '库存',
-    width: 100,
-    align: 'center',
-    searchable: true,
-    searchType: 'number',
-    sortable: true,
-    slots: { default: 'stock' }
-  },
-  {
-    field: 'sales',
-    title: '销量',
-    width: 100,
-    align: 'center',
-    sortable: true,
-    formatter: ({ cellValue }) => cellValue || 0
-  },
-  {
-    field: 'status',
+    field: 'skuStatusName',
     title: '状态',
     width: 100,
     align: 'center',
@@ -320,16 +302,6 @@ const columns: TableColumn[] = [
     ],
     slots: { default: 'status' }
   },
-  {
-    field: 'createTime',
-    title: '创建时间',
-    width: 180,
-    align: 'center',
-    searchable: true,
-    searchType: 'daterange',
-    sortable: true,
-    formatter: ({ cellValue }) => cellValue || '--'
-  }
 ]
 
 const tableRef = ref<TableInstance>()
@@ -461,12 +433,12 @@ const handleViewDetail = async (row: any) => {
     <div style="text-align: left;">
       <p><strong>商品名称：</strong>${row.name || '--'}</p>
       <p><strong>商品编码：</strong>${row.code || '--'}</p>
-      <p><strong>分类：</strong>${row.category || '--'}</p>
+      <p><strong>分类：</strong>${row.categoryName || '--'}</p>
       <p><strong>品牌：</strong>${row.brand || '--'}</p>
       <p><strong>价格：</strong>¥${row.price || '0.00'}</p>
       <p><strong>库存：</strong>${row.stock || 0}</p>
       <p><strong>销量：</strong>${row.sales || 0}</p>
-      <p><strong>状态：</strong>${getStatusText(row.status)}</p>
+      <p><strong>状态：</strong>${row.skuStatusName}</p>
       <p><strong>描述：</strong>${row.description || '--'}</p>
     </div>
     `,
