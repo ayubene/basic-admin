@@ -19,7 +19,13 @@ const routes = [
         path: '/products',
         name: 'products',
         component: () => import('@/views/ProductManagementView.vue')
-    }
+    },
+    {
+        path: '/accrued',
+        name: 'accrued',
+        component: () => import('@/views/AccruedManagementView.vue')
+    },
+    
 ];
 const router = createRouter({
     history: createWebHistory(),

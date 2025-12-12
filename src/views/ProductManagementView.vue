@@ -8,7 +8,6 @@
         </p>
       </div>
       <el-space>
-        <BasicButton type="primary" @click="handleCreate">新增商品</BasicButton>
         <BasicButton type="success" :on-click="refresh">手动刷新</BasicButton>
       </el-space>
     </div>
@@ -36,6 +35,7 @@
     >
       <!-- 工具栏插槽：添加自定义按钮 -->
       <template #toolbar>
+        <BasicButton type="primary" @click="handleCreate">新增商品</BasicButton>
         <BasicButton type="info" :on-click="handleBatchExport">批量导出</BasicButton>
         <BasicButton type="warning" :on-click="handleBatchUpdate">批量上架</BasicButton>
       </template>
@@ -90,7 +90,7 @@
   </div>
 
   <!-- 新增/编辑商品弹窗 -->
-  <BasicModal v-model="modalVisible" :title="modalTitle" width="800px">
+  <BasicModal v-model="modalVisible" :title="modalTitle" width="800px" @confirm="submitForm">
     <el-form :model="form" label-width="100px">
       <el-row :gutter="20">
         <el-col :span="12">
@@ -174,12 +174,6 @@
               :rows="4"
               placeholder="请输入商品描述"
             />
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item>
-            <BasicButton type="primary" :on-click="submitForm">提交</BasicButton>
-            <BasicButton style="margin-left: 12px" @click="modalVisible = false">取消</BasicButton>
           </el-form-item>
         </el-col>
       </el-row>

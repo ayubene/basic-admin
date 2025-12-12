@@ -53,40 +53,40 @@ export const clearToken = () => {
 }
 
 // 请求拦截器 - 添加 token
-try {
-  if ((request as any).interceptors && (request as any).interceptors.request) {
-    ;(request as any).interceptors.request.use(
-      (config: any) => {
-        const token = getToken()  || 'qdsfmksd'
+// try {
+//   if ((request as any).interceptors && (request as any).interceptors.request) {
+//     ;(request as any).interceptors.request.use(
+//       (config: any) => {
+//         const token = getToken()  || 'qdsfmksd'
         
-        console.log('🔍 请求拦截器触发:', config.url)
-        console.log('🔑 当前 token:', token)
+//         console.log('🔍 请求拦截器触发:', config.url)
+//         console.log('🔑 当前 token:', token)
         
-        // 如果有 token，添加到请求头
-        if (token) {
-          if (!config.headers) {
-            config.headers = {}
-          }
-          config.headers.Authorization = `Bearer ${token}`
-          console.log('✅ 已添加 Authorization 头')
-        } else {
-          console.warn('⚠️ 没有找到 token')
-        }
+//         // 如果有 token，添加到请求头
+//         if (token) {
+//           if (!config.headers) {
+//             config.headers = {}
+//           }
+//           config.headers.Authorization = `Bearer ${token}`
+//           console.log('✅ 已添加 Authorization 头')
+//         } else {
+//           console.warn('⚠️ 没有找到 token')
+//         }
         
-        return config
-      },
-      (error: any) => {
-        console.error('❌ 请求错误:', error)
-        return Promise.reject(error)
-      }
-    )
-    console.log('✅ 请求拦截器配置成功')
-  } else {
-    console.warn('⚠️ request.interceptors.request 不存在')
-  }
-} catch (error) {
-  console.error('❌ 配置请求拦截器失败:', error)
-}
+//         return config
+//       },
+//       (error: any) => {
+//         console.error('❌ 请求错误:', error)
+//         return Promise.reject(error)
+//       }
+//     )
+//     console.log('✅ 请求拦截器配置成功')
+//   } else {
+//     console.warn('⚠️ request.interceptors.request 不存在')
+//   }
+// } catch (error) {
+//   console.error('❌ 配置请求拦截器失败:', error)
+// }
 
 // 响应拦截器 - 处理数据格式和错误
 try {
